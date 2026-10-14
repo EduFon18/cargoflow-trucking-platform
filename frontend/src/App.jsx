@@ -36,6 +36,33 @@ const processedBookings = [
 function App() {
   const [activeView, setActiveView] = useState('dashboard')
   const [selectedBooking, setSelectedBooking] = useState(null)
+  const [moveForm, setMoveForm] = useState({
+  moveDestination: '',
+  destinationType: '',
+  requestedPickupDate: '',
+  requestedDeliveryDate: '',
+  carrier: 'Not Assigned',
+  pickupAppointment: '',
+  deliveryAppointment: '',
+  dispatchInstructions: '',
+  operationalNotes: '',
+})
+
+const handleStartMoveCreation = () => {
+  setMoveForm({
+    moveDestination: selectedBooking?.moveDestination || '',
+    destinationType: selectedBooking?.destinationType || '',
+    requestedPickupDate: '',
+    requestedDeliveryDate: '',
+    carrier: 'Not Assigned',
+    pickupAppointment: '',
+    deliveryAppointment: '',
+    dispatchInstructions: '',
+    operationalNotes: '',
+  })
+
+  setActiveView('create-move')
+}
 
   return (
     <div className="app-shell">
@@ -172,7 +199,7 @@ function App() {
             </section>
           </>
         )}
-        
+
 {activeView === 'booking-details' && selectedBooking && (
   <>
     <section className="page-header">
@@ -245,7 +272,260 @@ function App() {
         >
           Back to Processed Bookings
         </button>
+
+        <button
+          className="primary-button"
+          onClick={handleStartMoveCreation}
+        >
+          Create Trucking Move
+        </button>
       </div>
+    </section>
+  </>
+)}
+{activeView === 'create-move' && selectedBooking && (
+  <>
+    <section className="page-header">
+      <p className="section-label">TRUCKING MOVE CREATION</p>
+      <h2>Create Trucking Move</h2>
+      <p>
+        Enter and confirm the operational information required for booking{' '}
+        {selectedBooking.bookingNumber}.
+      </p>
+    </section>
+
+    <section className="form-card">
+
+      <div className="booking-context">
+        <div>
+          <span>Booking</span>
+          <strong>{selectedBooking.bookingNumber}</strong>
+        </div>
+
+        <div>
+          <span>Customer</span>
+          <strong>{selectedBooking.customer}</strong>
+        </div>
+
+        <div>
+          <span>Container</span>
+          <strong>{selectedBooking.containerNumber}</strong>
+        </div>
+
+        <div>
+          <span>Origin</span>
+          <strong>{selectedBooking.origin}</strong>
+        </div>
+
+        <div>
+          <span>POL</span>
+          <strong>{selectedBooking.pol}</strong>
+        </div>
+
+        <div>
+          <span>Cut-Off</span>
+          <strong>{selectedBooking.cutOff}</strong>
+        </div>
+      </div>
+
+      <form
+        className="move-form"
+        onSubmit={(event) => event.preventDefault()}
+      >
+
+        <div className="form-group">
+          <label htmlFor="moveDestination">
+            Move Destination / Delivery Facility *
+          </label>
+
+          <input
+            id="moveDestination"
+            type="text"
+            value={moveForm.moveDestination}
+            onChange={(event) =>
+              setMoveForm({
+                ...moveForm,
+                moveDestination: event.target.value,
+              })
+            }
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="destinationType">
+            Destination Type *
+          </label>
+
+          <select
+            id="destinationType"
+            value={moveForm.destinationType}
+            onChange={(event) =>
+              setMoveForm({
+                ...moveForm,
+                destinationType: event.target.value,
+              })
+            }
+          >
+            <option value="">Select destination type</option>
+            <option value="Port / Marine Terminal">
+              Port / Marine Terminal
+            </option>
+            <option value="Rail / Intermodal Terminal">
+              Rail / Intermodal Terminal
+            </option>
+            <option value="Other">
+              Other
+            </option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="requestedPickupDate">
+            Requested Pickup Date *
+          </label>
+
+          <input
+            id="requestedPickupDate"
+            type="date"
+            value={moveForm.requestedPickupDate}
+            onChange={(event) =>
+              setMoveForm({
+                ...moveForm,
+                requestedPickupDate: event.target.value,
+              })
+            }
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="requestedDeliveryDate">
+            Requested Delivery Date *
+          </label>
+
+          <input
+            id="requestedDeliveryDate"
+            type="date"
+            value={moveForm.requestedDeliveryDate}
+            onChange={(event) =>
+              setMoveForm({
+                ...moveForm,
+                requestedDeliveryDate: event.target.value,
+              })
+            }
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="carrier">Carrier</label>
+
+          <select
+            id="carrier"
+            value={moveForm.carrier}
+            onChange={(event) =>
+              setMoveForm({
+                ...moveForm,
+                carrier: event.target.value,
+              })
+            }
+          >
+            <option value="Not Assigned">Not Assigned</option>
+            <option value="Carrier A">Carrier A</option>
+            <option value="Carrier B">Carrier B</option>
+            <option value="Carrier C">Carrier C</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="pickupAppointment">
+            Pickup Appointment
+          </label>
+
+          <input
+            id="pickupAppointment"
+            type="datetime-local"
+            value={moveForm.pickupAppointment}
+            onChange={(event) =>
+              setMoveForm({
+                ...moveForm,
+                pickupAppointment: event.target.value,
+              })
+            }
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="deliveryAppointment">
+            Delivery Appointment
+          </label>
+
+          <input
+            id="deliveryAppointment"
+            type="datetime-local"
+            value={moveForm.deliveryAppointment}
+            onChange={(event) =>
+              setMoveForm({
+                ...moveForm,
+                deliveryAppointment: event.target.value,
+              })
+            }
+          />
+        </div>
+
+        <div className="form-group form-group-full">
+          <label htmlFor="dispatchInstructions">
+            Dispatch Instructions
+          </label>
+
+          <textarea
+            id="dispatchInstructions"
+            rows="4"
+            value={moveForm.dispatchInstructions}
+            onChange={(event) =>
+              setMoveForm({
+                ...moveForm,
+                dispatchInstructions: event.target.value,
+              })
+            }
+          />
+        </div>
+
+        <div className="form-group form-group-full">
+          <label htmlFor="operationalNotes">
+            Operational Notes
+          </label>
+
+          <textarea
+            id="operationalNotes"
+            rows="4"
+            value={moveForm.operationalNotes}
+            onChange={(event) =>
+              setMoveForm({
+                ...moveForm,
+                operationalNotes: event.target.value,
+              })
+            }
+          />
+        </div>
+
+        <div className="form-actions">
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => setActiveView('booking-details')}
+          >
+            Back
+          </button>
+
+          <button
+            type="submit"
+            className="primary-button"
+          >
+            Create Trucking Move
+          </button>
+        </div>
+
+      </form>
+
     </section>
   </>
 )}
