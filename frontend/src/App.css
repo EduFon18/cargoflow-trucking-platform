@@ -362,3 +362,21 @@
     grid-column: auto;
   }
 }
+
+.field-error {
+  color: #b42318;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.form-group input.input-error,
+.form-group select.input-error {
+  border-color: #b42318;
+  background-color: #fff8f7;
+}
+
+.form-group input.input-error:focus,
+.form-group select.input-error:focus {
+  outline-color: #f0aaa4;
+  border-color: #b42318;
+}

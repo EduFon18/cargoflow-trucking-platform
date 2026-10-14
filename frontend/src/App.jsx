@@ -47,6 +47,7 @@ function App() {
   dispatchInstructions: '',
   operationalNotes: '',
 })
+const [formErrors, setFormErrors] = useState({})
 
 const handleStartMoveCreation = () => {
   setMoveForm({
@@ -63,6 +64,52 @@ const handleStartMoveCreation = () => {
 
   setActiveView('create-move')
 }
+
+const validateMoveForm = () => {
+  const errors = {}
+
+  if (!moveForm.moveDestination.trim()) {
+    errors.moveDestination = 'Move destination is required.'
+  }
+
+  if (!moveForm.destinationType) {
+    errors.destinationType = 'Destination type is required.'
+  }
+
+  if (!moveForm.requestedPickupDate) {
+    errors.requestedPickupDate = 'Requested pickup date is required.'
+  }
+
+  if (!moveForm.requestedDeliveryDate) {
+    errors.requestedDeliveryDate = 'Requested delivery date is required.'
+  }
+
+  if (
+    moveForm.requestedPickupDate &&
+    moveForm.requestedDeliveryDate &&
+    moveForm.requestedDeliveryDate < moveForm.requestedPickupDate
+  ) {
+    errors.requestedDeliveryDate =
+      'Requested delivery date cannot be earlier than pickup date.'
+  }
+
+  setFormErrors(errors)
+
+  return Object.keys(errors).length === 0
+}
+
+const handleMoveFormSubmit = (event) => {
+  event.preventDefault()
+
+  const isValid = validateMoveForm()
+
+  if (!isValid) {
+    return
+  }
+
+  console.log('Valid trucking move form:', moveForm)
+}
+
 
   return (
     <div className="app-shell">
@@ -330,7 +377,7 @@ const handleStartMoveCreation = () => {
 
       <form
         className="move-form"
-        onSubmit={(event) => event.preventDefault()}
+        onSubmit={handleMoveFormSubmit}
       >
 
         <div className="form-group">
@@ -341,6 +388,7 @@ const handleStartMoveCreation = () => {
           <input
             id="moveDestination"
             type="text"
+            className={formErrors.moveDestination ? 'input-error' : ''}
             value={moveForm.moveDestination}
             onChange={(event) =>
               setMoveForm({
@@ -348,7 +396,14 @@ const handleStartMoveCreation = () => {
                 moveDestination: event.target.value,
               })
             }
+  
           />
+
+          {formErrors.moveDestination && (
+            <span className="field-error">
+             {formErrors.moveDestination}
+            </span>
+          )}
         </div>
 
         <div className="form-group">
@@ -358,13 +413,14 @@ const handleStartMoveCreation = () => {
 
           <select
             id="destinationType"
-            value={moveForm.destinationType}
+            className={formErrors.destinationType ? 'input-error' : ''}
+            value={moveForm.destinationType}           
             onChange={(event) =>
               setMoveForm({
                 ...moveForm,
                 destinationType: event.target.value,
               })
-            }
+            }           
           >
             <option value="">Select destination type</option>
             <option value="Port / Marine Terminal">
@@ -377,6 +433,12 @@ const handleStartMoveCreation = () => {
               Other
             </option>
           </select>
+
+          {formErrors.destinationType && (
+              <span className="field-error">
+                {formErrors.destinationType}
+              </span>
+            )}
         </div>
 
         <div className="form-group">
@@ -387,14 +449,20 @@ const handleStartMoveCreation = () => {
           <input
             id="requestedPickupDate"
             type="date"
+            className={formErrors.requestedPickupDate ? 'input-error' : ''}
             value={moveForm.requestedPickupDate}
             onChange={(event) =>
               setMoveForm({
                 ...moveForm,
                 requestedPickupDate: event.target.value,
               })
-            }
+            }            
           />
+          {formErrors.requestedPickupDate && (
+              <span className="field-error">
+                {formErrors.requestedPickupDate}
+              </span>
+            )}
         </div>
 
         <div className="form-group">
@@ -405,14 +473,21 @@ const handleStartMoveCreation = () => {
           <input
             id="requestedDeliveryDate"
             type="date"
+            className={formErrors.requestedDeliveryDate ? 'input-error' : ''}
             value={moveForm.requestedDeliveryDate}
             onChange={(event) =>
               setMoveForm({
                 ...moveForm,
                 requestedDeliveryDate: event.target.value,
               })
-            }
+            }            
           />
+
+          {formErrors.requestedDeliveryDate && (
+              <span className="field-error">
+                {formErrors.requestedDeliveryDate}
+              </span>
+            )}
         </div>
 
         <div className="form-group">
