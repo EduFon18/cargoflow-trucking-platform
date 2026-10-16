@@ -1,0 +1,11 @@
+
+
+| Date | Task | Prompt Used | AI Tool | Generated Result | What We Changed | Was the Output Correct? | How We Validated It |
+|---|---|---|---|---|---|---|---|
+| Oct. 2026 | Refine frontend requirements | Help define the Week 2 CargoFlow frontend workflow, required screens, and data collection fields based on the validated trucking move requirements. | ChatGPT | Proposed a focused Operations workflow: Processed Bookings → Booking Review → Create Trucking Move → Submit → Display Collected Data. | Updated the origin/destination model to reflect export trucking operations and separated Move Destination from Port of Loading (POL). | Partially | Compared the generated workflow with the validated CargoFlow business process and corrected import-style examples. |
+
+| Oct. 2026 | Create React frontend structure | Help create a simple React frontend structure for CargoFlow with a header, navigation, dashboard, and mock operational summary cards. | ChatGPT | Generated React JSX and CSS for the initial CargoFlow frontend structure. | Adjusted the interface and confirmed that the layout matched the CargoFlow POC scope. | Yes | Ran the React application locally with Vite and visually reviewed the rendered interface. |
+
+| Oct. 2026 | Add frontend validation | Add validation to the CargoFlow trucking move form for required fields and prevent a delivery date earlier than the pickup date. | ChatGPT | Generated React validation logic, error state handling, and error-message styling. | Tested and corrected the validation behavior to ensure the requested pickup and delivery fields were being compared correctly. | Yes, after testing | Submitted invalid data and confirmed that the form displayed errors and blocked submission. Then tested a valid scenario. |
+
+| Oct. 2026 | Implement mock form submission | Create a frontend-only submission flow that combines processed booking data with trucking move form data and displays a confirmation screen without using an API or database. | ChatGPT | Generated React state logic for a temporary trucking move object and a success confirmation screen. | Kept the generated move reference temporary because a future backend/database will generate production identifiers. | Yes | Completed a valid form submission and confirmed that the collected trucking move information appeared on the confirmation screen. |
