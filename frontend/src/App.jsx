@@ -48,6 +48,7 @@ function App() {
   operationalNotes: '',
 })
 const [formErrors, setFormErrors] = useState({})
+const [createdMove, setCreatedMove] = useState(null)
 
 const handleStartMoveCreation = () => {
   setMoveForm({
@@ -107,7 +108,27 @@ const handleMoveFormSubmit = (event) => {
     return
   }
 
-  console.log('Valid trucking move form:', moveForm)
+  const newMove = {
+    moveReference: `CF-${selectedBooking.id
+      .toString()
+      .padStart(4, '0')}`,
+    bookingNumber: selectedBooking.bookingNumber,
+    customer: selectedBooking.customer,
+    containerNumber: selectedBooking.containerNumber,
+    containerType: selectedBooking.containerType,
+    origin: selectedBooking.origin,
+    pol: selectedBooking.pol,
+    erd: selectedBooking.erd,
+    cutOff: selectedBooking.cutOff,
+    ...moveForm,
+    status: 'Active',
+  }
+
+  setCreatedMove(newMove)
+  setFormErrors({})
+  setActiveView('move-created')
+
+  console.log('Created trucking move:', newMove)
 }
 
 
@@ -604,6 +625,104 @@ const handleMoveFormSubmit = (event) => {
     </section>
   </>
 )}
+
+        {activeView === 'move-created' && createdMove && (
+          <>
+            <section className="page-header">
+              <p className="section-label">TRUCKING MOVE CREATED</p>
+              <h2>Move Created Successfully</h2>
+              <p>
+                The trucking move has been temporarily created in the frontend prototype.
+              </p>
+            </section>
+
+            <section className="success-card">
+
+              <div className="success-message">
+                <span className="success-icon">✓</span>
+
+                <div>
+                  <strong>{createdMove.moveReference}</strong>
+                  <p>
+                    Created from booking {createdMove.bookingNumber}
+                  </p>
+                </div>
+              </div>
+
+              <div className="details-grid">
+
+                <div className="detail-item">
+                  <span>Customer</span>
+                  <strong>{createdMove.customer}</strong>
+                </div>
+
+                <div className="detail-item">
+                  <span>Container</span>
+                  <strong>{createdMove.containerNumber}</strong>
+                </div>
+
+                <div className="detail-item">
+                  <span>Origin</span>
+                  <strong>{createdMove.origin}</strong>
+                </div>
+
+                <div className="detail-item">
+                  <span>Move Destination</span>
+                  <strong>{createdMove.moveDestination}</strong>
+                </div>
+
+                <div className="detail-item">
+                  <span>Destination Type</span>
+                  <strong>{createdMove.destinationType}</strong>
+                </div>
+
+                <div className="detail-item">
+                  <span>Port of Loading</span>
+                  <strong>{createdMove.pol}</strong>
+                </div>
+
+                <div className="detail-item">
+                  <span>Requested Pickup</span>
+                  <strong>{createdMove.requestedPickupDate}</strong>
+                </div>
+
+                <div className="detail-item">
+                  <span>Requested Delivery</span>
+                  <strong>{createdMove.requestedDeliveryDate}</strong>
+                </div>
+
+                <div className="detail-item">
+                  <span>Carrier</span>
+                  <strong>{createdMove.carrier}</strong>
+                </div>
+
+                <div className="detail-item">
+                  <span>Status</span>
+                  <strong>{createdMove.status}</strong>
+                </div>
+
+              </div>
+
+              <div className="details-actions">
+                <button
+                  className="secondary-button"
+                  onClick={() => setActiveView('bookings')}
+                >
+                  Back to Processed Bookings
+                </button>
+
+                <button
+                  className="primary-button"
+                  onClick={() => setActiveView('moves')}
+                >
+                  View Trucking Moves
+                </button>
+              </div>
+
+            </section>
+          </>
+        )}
+
         {activeView === 'moves' && (
           <section className="page-header">
             <p className="section-label">OPERATIONS PORTAL</p>
