@@ -33,27 +33,16 @@ const processedBookings = [
   },
 ]
 
+
 function App() {
   const [activeView, setActiveView] = useState('dashboard')
   const [selectedBooking, setSelectedBooking] = useState(null)
-  const [moveForm, setMoveForm] = useState({
-  moveDestination: '',
-  destinationType: '',
-  requestedPickupDate: '',
-  requestedDeliveryDate: '',
-  carrier: 'Not Assigned',
-  pickupAppointment: '',
-  deliveryAppointment: '',
-  dispatchInstructions: '',
-  operationalNotes: '',
-})
-const [formErrors, setFormErrors] = useState({})
-const [createdMove, setCreatedMove] = useState(null)
+  const [formErrors, setFormErrors] = useState({})
+  const [createdMove, setCreatedMove] = useState(null)
 
-const handleStartMoveCreation = () => {
-  setMoveForm({
-    moveDestination: selectedBooking?.moveDestination || '',
-    destinationType: selectedBooking?.destinationType || '',
+  const [moveForm, setMoveForm] = useState({
+    moveDestination: '',
+    destinationType: '',
     requestedPickupDate: '',
     requestedDeliveryDate: '',
     carrier: 'Not Assigned',
@@ -63,73 +52,105 @@ const handleStartMoveCreation = () => {
     operationalNotes: '',
   })
 
-  setActiveView('create-move')
-}
 
-const validateMoveForm = () => {
-  const errors = {}
+  const handleStartMoveCreation = () => {
+    setMoveForm({
+      moveDestination: selectedBooking?.moveDestination || '',
+      destinationType: selectedBooking?.destinationType || '',
+      requestedPickupDate: '',
+      requestedDeliveryDate: '',
+      carrier: 'Not Assigned',
+      pickupAppointment: '',
+      deliveryAppointment: '',
+      dispatchInstructions: '',
+      operationalNotes: '',
+    })
 
-  if (!moveForm.moveDestination.trim()) {
-    errors.moveDestination = 'Move destination is required.'
+    setFormErrors({})
+    setActiveView('create-move')
   }
 
-  if (!moveForm.destinationType) {
-    errors.destinationType = 'Destination type is required.'
+
+  const validateMoveForm = () => {
+    const errors = {}
+
+    if (!moveForm.moveDestination.trim()) {
+      errors.moveDestination = 'Move destination is required.'
+    }
+
+    if (!moveForm.destinationType) {
+      errors.destinationType = 'Destination type is required.'
+    }
+
+    if (!moveForm.requestedPickupDate) {
+      errors.requestedPickupDate = 'Requested pickup date is required.'
+    }
+
+    if (!moveForm.requestedDeliveryDate) {
+      errors.requestedDeliveryDate = 'Requested delivery date is required.'
+    }
+
+    if (
+      moveForm.requestedPickupDate &&
+      moveForm.requestedDeliveryDate &&
+      moveForm.requestedDeliveryDate < moveForm.requestedPickupDate
+    ) {
+      errors.requestedDeliveryDate =
+        'Requested delivery date cannot be earlier than pickup date.'
+    }
+
+    setFormErrors(errors)
+
+    return Object.keys(errors).length === 0
   }
 
-  if (!moveForm.requestedPickupDate) {
-    errors.requestedPickupDate = 'Requested pickup date is required.'
+
+  const handleMoveFormSubmit = async (event) => {
+    event.preventDefault()
+
+    const isValid = validateMoveForm()
+
+    if (!isValid) {
+      return
+    }
+
+    const requestBody = {
+      bookingNumber: selectedBooking.bookingNumber,
+      moveDestination: moveForm.moveDestination,
+      destinationType: moveForm.destinationType,
+      requestedPickupDate: moveForm.requestedPickupDate,
+      requestedDeliveryDate: moveForm.requestedDeliveryDate,
+      carrier: moveForm.carrier,
+      pickupAppointment: moveForm.pickupAppointment || null,
+      deliveryAppointment: moveForm.deliveryAppointment || null,
+      dispatchInstructions: moveForm.dispatchInstructions || null,
+      operationalNotes: moveForm.operationalNotes || null,
+    }
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/moves', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      })
+
+      if (!response.ok) {
+        throw new Error('Unable to create trucking move.')
+      }
+
+      const createdMoveData = await response.json()
+
+      setCreatedMove(createdMoveData)
+      setFormErrors({})
+      setActiveView('move-created')
+
+      console.log('Move created by API:', createdMoveData)
+    } catch (error) {
+      console.error('API error:', error)
+    }
   }
-
-  if (!moveForm.requestedDeliveryDate) {
-    errors.requestedDeliveryDate = 'Requested delivery date is required.'
-  }
-
-  if (
-    moveForm.requestedPickupDate &&
-    moveForm.requestedDeliveryDate &&
-    moveForm.requestedDeliveryDate < moveForm.requestedPickupDate
-  ) {
-    errors.requestedDeliveryDate =
-      'Requested delivery date cannot be earlier than pickup date.'
-  }
-
-  setFormErrors(errors)
-
-  return Object.keys(errors).length === 0
-}
-
-const handleMoveFormSubmit = (event) => {
-  event.preventDefault()
-
-  const isValid = validateMoveForm()
-
-  if (!isValid) {
-    return
-  }
-
-  const newMove = {
-    moveReference: `CF-${selectedBooking.id
-      .toString()
-      .padStart(4, '0')}`,
-    bookingNumber: selectedBooking.bookingNumber,
-    customer: selectedBooking.customer,
-    containerNumber: selectedBooking.containerNumber,
-    containerType: selectedBooking.containerType,
-    origin: selectedBooking.origin,
-    pol: selectedBooking.pol,
-    erd: selectedBooking.erd,
-    cutOff: selectedBooking.cutOff,
-    ...moveForm,
-    status: 'Active',
-  }
-
-  setCreatedMove(newMove)
-  setFormErrors({})
-  setActiveView('move-created')
-
-  console.log('Created trucking move:', newMove)
-}
 
 
   return (
@@ -146,7 +167,9 @@ const handleMoveFormSubmit = (event) => {
         </div>
       </header>
 
+
       <nav className="app-nav" aria-label="Main navigation">
+
         <button
           className={`nav-item ${
             activeView === 'dashboard' ? 'nav-item-active' : ''
@@ -173,7 +196,9 @@ const handleMoveFormSubmit = (event) => {
         >
           Trucking Moves
         </button>
+
       </nav>
+
 
       <main className="app-content">
 
@@ -182,13 +207,16 @@ const handleMoveFormSubmit = (event) => {
             <section className="page-header">
               <p className="section-label">OPERATIONS PORTAL</p>
               <h2>Dashboard</h2>
+
               <p>
-                Week 2 frontend prototype for the CargoFlow container trucking
+                Week 3 frontend prototype for the CargoFlow container trucking
                 move management platform.
               </p>
             </section>
 
+
             <section className="summary-grid">
+
               <article className="summary-card">
                 <span>Processed Bookings</span>
                 <strong>{processedBookings.length}</strong>
@@ -197,8 +225,10 @@ const handleMoveFormSubmit = (event) => {
 
               <article className="summary-card">
                 <span>Active Trucking Moves</span>
-                <strong>0</strong>
-                <small>No active moves</small>
+                <strong>{createdMove ? 1 : 0}</strong>
+                <small>
+                  {createdMove ? 'Move created through API' : 'No active moves'}
+                </small>
               </article>
 
               <article className="summary-card">
@@ -206,22 +236,28 @@ const handleMoveFormSubmit = (event) => {
                 <strong>0</strong>
                 <small>No exceptions reported</small>
               </article>
+
             </section>
           </>
         )}
+
 
         {activeView === 'bookings' && (
           <>
             <section className="page-header">
               <p className="section-label">OPERATIONS PORTAL</p>
               <h2>Processed Bookings</h2>
+
               <p>
                 Review export bookings requiring inland transportation.
               </p>
             </section>
 
+
             <section className="table-card">
+
               <table className="bookings-table">
+
                 <thead>
                   <tr>
                     <th>Booking</th>
@@ -235,23 +271,27 @@ const handleMoveFormSubmit = (event) => {
                   </tr>
                 </thead>
 
+
                 <tbody>
                   {processedBookings.map((booking) => (
                     <tr key={booking.id}>
+
                       <td>{booking.bookingNumber}</td>
                       <td>{booking.customer}</td>
                       <td>{booking.containerNumber}</td>
                       <td>{booking.origin}</td>
                       <td>{booking.moveDestination}</td>
                       <td>{booking.pol}</td>
+
                       <td>
                         <span className="status-badge">
                           {booking.status}
                         </span>
                       </td>
+
                       <td>
-                        <button 
-                          className="review-button" 
+                        <button
+                          className="review-button"
                           onClick={() => {
                             setSelectedBooking(booking)
                             setActiveView('booking-details')
@@ -260,394 +300,487 @@ const handleMoveFormSubmit = (event) => {
                           Review
                         </button>
                       </td>
+
                     </tr>
                   ))}
                 </tbody>
+
               </table>
+
             </section>
           </>
         )}
 
-{activeView === 'booking-details' && selectedBooking && (
-  <>
-    <section className="page-header">
-      <p className="section-label">PROCESSED BOOKING REVIEW</p>
-      <h2>{selectedBooking.bookingNumber}</h2>
-      <p>
-        Review the processed booking information before creating a trucking move.
-      </p>
-    </section>
 
-    <section className="details-card">
-      <div className="details-grid">
+        {activeView === 'booking-details' && selectedBooking && (
+          <>
+            <section className="page-header">
+              <p className="section-label">PROCESSED BOOKING REVIEW</p>
+              <h2>{selectedBooking.bookingNumber}</h2>
 
-        <div className="detail-item">
-          <span>Customer</span>
-          <strong>{selectedBooking.customer}</strong>
-        </div>
+              <p>
+                Review the processed booking information before creating a
+                trucking move.
+              </p>
+            </section>
 
-        <div className="detail-item">
-          <span>Container Number</span>
-          <strong>{selectedBooking.containerNumber}</strong>
-        </div>
 
-        <div className="detail-item">
-          <span>Container Type</span>
-          <strong>{selectedBooking.containerType}</strong>
-        </div>
+            <section className="details-card">
 
-        <div className="detail-item">
-          <span>Pickup Location / Origin</span>
-          <strong>{selectedBooking.origin}</strong>
-        </div>
+              <div className="details-grid">
 
-        <div className="detail-item">
-          <span>Move Destination</span>
-          <strong>{selectedBooking.moveDestination}</strong>
-        </div>
+                <div className="detail-item">
+                  <span>Customer</span>
+                  <strong>{selectedBooking.customer}</strong>
+                </div>
 
-        <div className="detail-item">
-          <span>Destination Type</span>
-          <strong>{selectedBooking.destinationType}</strong>
-        </div>
+                <div className="detail-item">
+                  <span>Container Number</span>
+                  <strong>{selectedBooking.containerNumber}</strong>
+                </div>
 
-        <div className="detail-item">
-          <span>Port of Loading (POL)</span>
-          <strong>{selectedBooking.pol}</strong>
-        </div>
+                <div className="detail-item">
+                  <span>Container Type</span>
+                  <strong>{selectedBooking.containerType}</strong>
+                </div>
 
-        <div className="detail-item">
-          <span>ERD</span>
-          <strong>{selectedBooking.erd}</strong>
-        </div>
+                <div className="detail-item">
+                  <span>Pickup Location / Origin</span>
+                  <strong>{selectedBooking.origin}</strong>
+                </div>
 
-        <div className="detail-item">
-          <span>Cut-Off</span>
-          <strong>{selectedBooking.cutOff}</strong>
-        </div>
+                <div className="detail-item">
+                  <span>Move Destination</span>
+                  <strong>{selectedBooking.moveDestination}</strong>
+                </div>
 
-        <div className="detail-item">
-          <span>Status</span>
-          <strong>{selectedBooking.status}</strong>
-        </div>
+                <div className="detail-item">
+                  <span>Destination Type</span>
+                  <strong>{selectedBooking.destinationType}</strong>
+                </div>
 
-      </div>
+                <div className="detail-item">
+                  <span>Port of Loading (POL)</span>
+                  <strong>{selectedBooking.pol}</strong>
+                </div>
 
-      <div className="details-actions">
-        <button
-          className="secondary-button"
-          onClick={() => setActiveView('bookings')}
-        >
-          Back to Processed Bookings
-        </button>
+                <div className="detail-item">
+                  <span>ERD</span>
+                  <strong>{selectedBooking.erd}</strong>
+                </div>
 
-        <button
-          className="primary-button"
-          onClick={handleStartMoveCreation}
-        >
-          Create Trucking Move
-        </button>
-      </div>
-    </section>
-  </>
-)}
-{activeView === 'create-move' && selectedBooking && (
-  <>
-    <section className="page-header">
-      <p className="section-label">TRUCKING MOVE CREATION</p>
-      <h2>Create Trucking Move</h2>
-      <p>
-        Enter and confirm the operational information required for booking{' '}
-        {selectedBooking.bookingNumber}.
-      </p>
-    </section>
+                <div className="detail-item">
+                  <span>Cut-Off</span>
+                  <strong>{selectedBooking.cutOff}</strong>
+                </div>
 
-    <section className="form-card">
+                <div className="detail-item">
+                  <span>Status</span>
+                  <strong>{selectedBooking.status}</strong>
+                </div>
 
-      <div className="booking-context">
-        <div>
-          <span>Booking</span>
-          <strong>{selectedBooking.bookingNumber}</strong>
-        </div>
+              </div>
 
-        <div>
-          <span>Customer</span>
-          <strong>{selectedBooking.customer}</strong>
-        </div>
 
-        <div>
-          <span>Container</span>
-          <strong>{selectedBooking.containerNumber}</strong>
-        </div>
+              <div className="details-actions">
 
-        <div>
-          <span>Origin</span>
-          <strong>{selectedBooking.origin}</strong>
-        </div>
+                <button
+                  className="secondary-button"
+                  onClick={() => setActiveView('bookings')}
+                >
+                  Back to Processed Bookings
+                </button>
 
-        <div>
-          <span>POL</span>
-          <strong>{selectedBooking.pol}</strong>
-        </div>
+                <button
+                  className="primary-button"
+                  onClick={handleStartMoveCreation}
+                >
+                  Create Trucking Move
+                </button>
 
-        <div>
-          <span>Cut-Off</span>
-          <strong>{selectedBooking.cutOff}</strong>
-        </div>
-      </div>
+              </div>
 
-      <form
-        className="move-form"
-        onSubmit={handleMoveFormSubmit}
-      >
+            </section>
+          </>
+        )}
 
-        <div className="form-group">
-          <label htmlFor="moveDestination">
-            Move Destination / Delivery Facility *
-          </label>
 
-          <input
-            id="moveDestination"
-            type="text"
-            className={formErrors.moveDestination ? 'input-error' : ''}
-            value={moveForm.moveDestination}
-            onChange={(event) =>
-              setMoveForm({
-                ...moveForm,
-                moveDestination: event.target.value,
-              })
-            }
-  
-          />
+        {activeView === 'create-move' && selectedBooking && (
+          <>
+            <section className="page-header">
+              <p className="section-label">TRUCKING MOVE CREATION</p>
+              <h2>Create Trucking Move</h2>
 
-          {formErrors.moveDestination && (
-            <span className="field-error">
-             {formErrors.moveDestination}
-            </span>
-          )}
-        </div>
+              <p>
+                Enter and confirm the operational information required for booking{' '}
+                {selectedBooking.bookingNumber}.
+              </p>
+            </section>
 
-        <div className="form-group">
-          <label htmlFor="destinationType">
-            Destination Type *
-          </label>
 
-          <select
-            id="destinationType"
-            className={formErrors.destinationType ? 'input-error' : ''}
-            value={moveForm.destinationType}           
-            onChange={(event) =>
-              setMoveForm({
-                ...moveForm,
-                destinationType: event.target.value,
-              })
-            }           
-          >
-            <option value="">Select destination type</option>
-            <option value="Port / Marine Terminal">
-              Port / Marine Terminal
-            </option>
-            <option value="Rail / Intermodal Terminal">
-              Rail / Intermodal Terminal
-            </option>
-            <option value="Other">
-              Other
-            </option>
-          </select>
+            <section className="form-card">
 
-          {formErrors.destinationType && (
-              <span className="field-error">
-                {formErrors.destinationType}
-              </span>
-            )}
-        </div>
+              <div className="booking-context">
 
-        <div className="form-group">
-          <label htmlFor="requestedPickupDate">
-            Requested Pickup Date *
-          </label>
+                <div>
+                  <span>Booking</span>
+                  <strong>{selectedBooking.bookingNumber}</strong>
+                </div>
 
-          <input
-            id="requestedPickupDate"
-            type="date"
-            className={formErrors.requestedPickupDate ? 'input-error' : ''}
-            value={moveForm.requestedPickupDate}
-            onChange={(event) =>
-              setMoveForm({
-                ...moveForm,
-                requestedPickupDate: event.target.value,
-              })
-            }            
-          />
-          {formErrors.requestedPickupDate && (
-              <span className="field-error">
-                {formErrors.requestedPickupDate}
-              </span>
-            )}
-        </div>
+                <div>
+                  <span>Customer</span>
+                  <strong>{selectedBooking.customer}</strong>
+                </div>
 
-        <div className="form-group">
-          <label htmlFor="requestedDeliveryDate">
-            Requested Delivery Date *
-          </label>
+                <div>
+                  <span>Container</span>
+                  <strong>{selectedBooking.containerNumber}</strong>
+                </div>
 
-          <input
-            id="requestedDeliveryDate"
-            type="date"
-            className={formErrors.requestedDeliveryDate ? 'input-error' : ''}
-            value={moveForm.requestedDeliveryDate}
-            onChange={(event) =>
-              setMoveForm({
-                ...moveForm,
-                requestedDeliveryDate: event.target.value,
-              })
-            }            
-          />
+                <div>
+                  <span>Origin</span>
+                  <strong>{selectedBooking.origin}</strong>
+                </div>
 
-          {formErrors.requestedDeliveryDate && (
-              <span className="field-error">
-                {formErrors.requestedDeliveryDate}
-              </span>
-            )}
-        </div>
+                <div>
+                  <span>POL</span>
+                  <strong>{selectedBooking.pol}</strong>
+                </div>
 
-        <div className="form-group">
-          <label htmlFor="carrier">Carrier</label>
+                <div>
+                  <span>Cut-Off</span>
+                  <strong>{selectedBooking.cutOff}</strong>
+                </div>
 
-          <select
-            id="carrier"
-            value={moveForm.carrier}
-            onChange={(event) =>
-              setMoveForm({
-                ...moveForm,
-                carrier: event.target.value,
-              })
-            }
-          >
-            <option value="Not Assigned">Not Assigned</option>
-            <option value="Carrier A">Carrier A</option>
-            <option value="Carrier B">Carrier B</option>
-            <option value="Carrier C">Carrier C</option>
-          </select>
-        </div>
+              </div>
 
-        <div className="form-group">
-          <label htmlFor="pickupAppointment">
-            Pickup Appointment
-          </label>
 
-          <input
-            id="pickupAppointment"
-            type="datetime-local"
-            value={moveForm.pickupAppointment}
-            onChange={(event) =>
-              setMoveForm({
-                ...moveForm,
-                pickupAppointment: event.target.value,
-              })
-            }
-          />
-        </div>
+              <form
+                className="move-form"
+                onSubmit={handleMoveFormSubmit}
+              >
 
-        <div className="form-group">
-          <label htmlFor="deliveryAppointment">
-            Delivery Appointment
-          </label>
+                <div className="form-group">
 
-          <input
-            id="deliveryAppointment"
-            type="datetime-local"
-            value={moveForm.deliveryAppointment}
-            onChange={(event) =>
-              setMoveForm({
-                ...moveForm,
-                deliveryAppointment: event.target.value,
-              })
-            }
-          />
-        </div>
+                  <label htmlFor="moveDestination">
+                    Move Destination / Delivery Facility *
+                  </label>
 
-        <div className="form-group form-group-full">
-          <label htmlFor="dispatchInstructions">
-            Dispatch Instructions
-          </label>
+                  <input
+                    id="moveDestination"
+                    type="text"
+                    className={
+                      formErrors.moveDestination ? 'input-error' : ''
+                    }
+                    value={moveForm.moveDestination}
+                    onChange={(event) =>
+                      setMoveForm({
+                        ...moveForm,
+                        moveDestination: event.target.value,
+                      })
+                    }
+                  />
 
-          <textarea
-            id="dispatchInstructions"
-            rows="4"
-            value={moveForm.dispatchInstructions}
-            onChange={(event) =>
-              setMoveForm({
-                ...moveForm,
-                dispatchInstructions: event.target.value,
-              })
-            }
-          />
-        </div>
+                  {formErrors.moveDestination && (
+                    <span className="field-error">
+                      {formErrors.moveDestination}
+                    </span>
+                  )}
 
-        <div className="form-group form-group-full">
-          <label htmlFor="operationalNotes">
-            Operational Notes
-          </label>
+                </div>
 
-          <textarea
-            id="operationalNotes"
-            rows="4"
-            value={moveForm.operationalNotes}
-            onChange={(event) =>
-              setMoveForm({
-                ...moveForm,
-                operationalNotes: event.target.value,
-              })
-            }
-          />
-        </div>
 
-        <div className="form-actions">
-          <button
-            type="button"
-            className="secondary-button"
-            onClick={() => setActiveView('booking-details')}
-          >
-            Back
-          </button>
+                <div className="form-group">
 
-          <button
-            type="submit"
-            className="primary-button"
-          >
-            Create Trucking Move
-          </button>
-        </div>
+                  <label htmlFor="destinationType">
+                    Destination Type *
+                  </label>
 
-      </form>
+                  <select
+                    id="destinationType"
+                    className={
+                      formErrors.destinationType ? 'input-error' : ''
+                    }
+                    value={moveForm.destinationType}
+                    onChange={(event) =>
+                      setMoveForm({
+                        ...moveForm,
+                        destinationType: event.target.value,
+                      })
+                    }
+                  >
+                    <option value="">
+                      Select destination type
+                    </option>
 
-    </section>
-  </>
-)}
+                    <option value="Port / Marine Terminal">
+                      Port / Marine Terminal
+                    </option>
+
+                    <option value="Rail / Intermodal Terminal">
+                      Rail / Intermodal Terminal
+                    </option>
+
+                    <option value="Other">
+                      Other
+                    </option>
+                  </select>
+
+                  {formErrors.destinationType && (
+                    <span className="field-error">
+                      {formErrors.destinationType}
+                    </span>
+                  )}
+
+                </div>
+
+
+                <div className="form-group">
+
+                  <label htmlFor="requestedPickupDate">
+                    Requested Pickup Date *
+                  </label>
+
+                  <input
+                    id="requestedPickupDate"
+                    type="date"
+                    className={
+                      formErrors.requestedPickupDate ? 'input-error' : ''
+                    }
+                    value={moveForm.requestedPickupDate}
+                    onChange={(event) =>
+                      setMoveForm({
+                        ...moveForm,
+                        requestedPickupDate: event.target.value,
+                      })
+                    }
+                  />
+
+                  {formErrors.requestedPickupDate && (
+                    <span className="field-error">
+                      {formErrors.requestedPickupDate}
+                    </span>
+                  )}
+
+                </div>
+
+
+                <div className="form-group">
+
+                  <label htmlFor="requestedDeliveryDate">
+                    Requested Delivery Date *
+                  </label>
+
+                  <input
+                    id="requestedDeliveryDate"
+                    type="date"
+                    className={
+                      formErrors.requestedDeliveryDate ? 'input-error' : ''
+                    }
+                    value={moveForm.requestedDeliveryDate}
+                    onChange={(event) =>
+                      setMoveForm({
+                        ...moveForm,
+                        requestedDeliveryDate: event.target.value,
+                      })
+                    }
+                  />
+
+                  {formErrors.requestedDeliveryDate && (
+                    <span className="field-error">
+                      {formErrors.requestedDeliveryDate}
+                    </span>
+                  )}
+
+                </div>
+
+
+                <div className="form-group">
+
+                  <label htmlFor="carrier">
+                    Carrier
+                  </label>
+
+                  <select
+                    id="carrier"
+                    value={moveForm.carrier}
+                    onChange={(event) =>
+                      setMoveForm({
+                        ...moveForm,
+                        carrier: event.target.value,
+                      })
+                    }
+                  >
+                    <option value="Not Assigned">
+                      Not Assigned
+                    </option>
+
+                    <option value="Carrier A">
+                      Carrier A
+                    </option>
+
+                    <option value="Carrier B">
+                      Carrier B
+                    </option>
+
+                    <option value="Carrier C">
+                      Carrier C
+                    </option>
+                  </select>
+
+                </div>
+
+
+                <div className="form-group">
+
+                  <label htmlFor="pickupAppointment">
+                    Pickup Appointment
+                  </label>
+
+                  <input
+                    id="pickupAppointment"
+                    type="datetime-local"
+                    value={moveForm.pickupAppointment}
+                    onChange={(event) =>
+                      setMoveForm({
+                        ...moveForm,
+                        pickupAppointment: event.target.value,
+                      })
+                    }
+                  />
+
+                </div>
+
+
+                <div className="form-group">
+
+                  <label htmlFor="deliveryAppointment">
+                    Delivery Appointment
+                  </label>
+
+                  <input
+                    id="deliveryAppointment"
+                    type="datetime-local"
+                    value={moveForm.deliveryAppointment}
+                    onChange={(event) =>
+                      setMoveForm({
+                        ...moveForm,
+                        deliveryAppointment: event.target.value,
+                      })
+                    }
+                  />
+
+                </div>
+
+
+                <div className="form-group form-group-full">
+
+                  <label htmlFor="dispatchInstructions">
+                    Dispatch Instructions
+                  </label>
+
+                  <textarea
+                    id="dispatchInstructions"
+                    rows="4"
+                    value={moveForm.dispatchInstructions}
+                    onChange={(event) =>
+                      setMoveForm({
+                        ...moveForm,
+                        dispatchInstructions: event.target.value,
+                      })
+                    }
+                  />
+
+                </div>
+
+
+                <div className="form-group form-group-full">
+
+                  <label htmlFor="operationalNotes">
+                    Operational Notes
+                  </label>
+
+                  <textarea
+                    id="operationalNotes"
+                    rows="4"
+                    value={moveForm.operationalNotes}
+                    onChange={(event) =>
+                      setMoveForm({
+                        ...moveForm,
+                        operationalNotes: event.target.value,
+                      })
+                    }
+                  />
+
+                </div>
+
+
+                <div className="form-actions">
+
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() => setActiveView('booking-details')}
+                  >
+                    Back
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="primary-button"
+                  >
+                    Create Trucking Move
+                  </button>
+
+                </div>
+
+              </form>
+
+            </section>
+          </>
+        )}
+
 
         {activeView === 'move-created' && createdMove && (
           <>
             <section className="page-header">
-              <p className="section-label">TRUCKING MOVE CREATED</p>
-              <h2>Move Created Successfully</h2>
-              <p>
-                The trucking move has been temporarily created in the frontend prototype.
+
+              <p className="section-label">
+                TRUCKING MOVE CREATED
               </p>
+
+              <h2>
+                Move Created Successfully
+              </h2>
+
+              <p>
+                The trucking move was successfully created through the
+                CargoFlow API.
+              </p>
+
             </section>
+
 
             <section className="success-card">
 
               <div className="success-message">
-                <span className="success-icon">✓</span>
+
+                <span className="success-icon">
+                  ✓
+                </span>
 
                 <div>
-                  <strong>{createdMove.moveReference}</strong>
+                  <strong>
+                    {createdMove.moveReference}
+                  </strong>
+
                   <p>
                     Created from booking {createdMove.bookingNumber}
                   </p>
                 </div>
+
               </div>
+
 
               <div className="details-grid">
 
@@ -703,7 +836,9 @@ const handleMoveFormSubmit = (event) => {
 
               </div>
 
+
               <div className="details-actions">
+
                 <button
                   className="secondary-button"
                   onClick={() => setActiveView('bookings')}
@@ -717,17 +852,36 @@ const handleMoveFormSubmit = (event) => {
                 >
                   View Trucking Moves
                 </button>
+
               </div>
 
             </section>
           </>
         )}
 
+
         {activeView === 'moves' && (
           <section className="page-header">
-            <p className="section-label">OPERATIONS PORTAL</p>
-            <h2>Trucking Moves</h2>
-            <p>No trucking moves have been created yet.</p>
+
+            <p className="section-label">
+              OPERATIONS PORTAL
+            </p>
+
+            <h2>
+              Trucking Moves
+            </h2>
+
+            {createdMove ? (
+              <p>
+                {createdMove.moveReference} — {createdMove.bookingNumber} —{' '}
+                {createdMove.status}
+              </p>
+            ) : (
+              <p>
+                No trucking moves have been created yet.
+              </p>
+            )}
+
           </section>
         )}
 
@@ -736,5 +890,6 @@ const handleMoveFormSubmit = (event) => {
     </div>
   )
 }
+
 
 export default App
