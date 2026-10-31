@@ -39,6 +39,7 @@ function App() {
   const [selectedBooking, setSelectedBooking] = useState(null)
   const [formErrors, setFormErrors] = useState({})
   const [createdMove, setCreatedMove] = useState(null)
+  const [apiError, setApiError] = useState('')
 
   const [moveForm, setMoveForm] = useState({
     moveDestination: '',
@@ -67,6 +68,7 @@ function App() {
     })
 
     setFormErrors({})
+    setApiError('')
     setActiveView('create-move')
   }
 
@@ -127,6 +129,8 @@ function App() {
       operationalNotes: moveForm.operationalNotes || null,
     }
 
+    setApiError('')
+
     try {
       const response = await fetch('http://127.0.0.1:8000/moves', {
         method: 'POST',
@@ -137,18 +141,31 @@ function App() {
       })
 
       if (!response.ok) {
-        throw new Error('Unable to create trucking move.')
+        const errorData = await response.json()
+
+        throw new Error(
+          typeof errorData.detail === 'string'
+            ? errorData.detail
+            : 'Unable to create trucking move.'
+        )
       }
 
       const createdMoveData = await response.json()
 
       setCreatedMove(createdMoveData)
       setFormErrors({})
+      setApiError('')
       setActiveView('move-created')
 
       console.log('Move created by API:', createdMoveData)
     } catch (error) {
       console.error('API error:', error)
+
+      setApiError(
+        error.message === 'Failed to fetch'
+          ? 'Unable to connect to the CargoFlow API.'
+          : error.message
+      )
     }
   }
 
@@ -713,6 +730,13 @@ function App() {
                   />
 
                 </div>
+
+
+                {apiError && (
+                  <div className="api-error-message">
+                    {apiError}
+                  </div>
+                )}
 
 
                 <div className="form-actions">

@@ -57,6 +57,23 @@ def read_root():
     status_code=201
 )
 def create_trucking_move(move: TruckingMoveCreate):
+
+    if move.requestedDeliveryDate < move.requestedPickupDate:
+        raise HTTPException(
+            status_code=400,
+            detail="Requested delivery date cannot be earlier than requested pickup date."
+        )
+
+    if (
+        move.pickupAppointment is not None
+        and move.deliveryAppointment is not None
+        and move.deliveryAppointment < move.pickupAppointment
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail="Delivery appointment cannot be earlier than pickup appointment."
+        )
+
     booking = mock_bookings.get(move.bookingNumber)
 
     if booking is None:

@@ -380,3 +380,13 @@
   outline-color: #f0aaa4;
   border-color: #b42318;
 }
+
+.api-error-message {
+  grid-column: 1 / -1;
+  padding: 14px 16px;
+  background-color: #fff1f1;
+  border: 1px solid #d64545;
+  border-radius: 6px;
+  color: #a61b1b;
+  font-weight: 600;
+}
