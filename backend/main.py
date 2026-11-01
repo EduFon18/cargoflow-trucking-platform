@@ -1,6 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from database import get_processed_bookings, create_trucking_move_in_db
+from database import (
+    get_processed_bookings,
+    get_carriers,
+    create_trucking_move_in_db,
+)
 
 from models import TruckingMoveCreate, TruckingMoveResponse
 
@@ -30,6 +34,15 @@ def read_root():
         "message": "CargoFlow API is running",
         "status": "healthy"
     }
+
+@app.get("/bookings")
+def read_processed_bookings():
+    return get_processed_bookings()
+
+
+@app.get("/carriers")
+def read_carriers():
+    return get_carriers()
 
 
 @app.post(

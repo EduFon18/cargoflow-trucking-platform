@@ -1,37 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 
-const processedBookings = [
-  {
-    id: 1,
-    bookingNumber: 'BK-1001',
-    customer: 'Demo Customer A',
-    containerNumber: 'MSCU1234567',
-    containerType: '40HC',
-    origin: 'Toronto, ON',
-    moveDestination: 'CN Brampton',
-    destinationType: 'Rail / Intermodal Terminal',
-    pol: 'Montreal',
-    erd: '2026-10-15',
-    cutOff: '2026-10-17 16:00',
-    status: 'Ready for Review',
-  },
-  {
-    id: 2,
-    bookingNumber: 'BK-1002',
-    customer: 'Demo Customer B',
-    containerNumber: 'TGHU7654321',
-    containerType: '40HC',
-    origin: 'Calgary, AB',
-    moveDestination: 'CN Calgary',
-    destinationType: 'Rail / Intermodal Terminal',
-    pol: 'Vancouver',
-    erd: '2026-10-16',
-    cutOff: '2026-10-18 14:00',
-    status: 'Ready for Review',
-  },
-]
+
 
 
 function App() {
@@ -40,6 +11,8 @@ function App() {
   const [formErrors, setFormErrors] = useState({})
   const [createdMove, setCreatedMove] = useState(null)
   const [apiError, setApiError] = useState('')
+  const [processedBookings, setProcessedBookings] = useState([])
+  const [carriers, setCarriers] = useState([])
 
   const [moveForm, setMoveForm] = useState({
     moveDestination: '',
@@ -52,6 +25,33 @@ function App() {
     dispatchInstructions: '',
     operationalNotes: '',
   })
+
+
+  useEffect(() => {
+    async function loadCargoFlowData() {
+      try {
+        const [bookingsResponse, carriersResponse] = await Promise.all([
+          fetch('http://127.0.0.1:8000/bookings'),
+          fetch('http://127.0.0.1:8000/carriers'),
+        ])
+
+        if (!bookingsResponse.ok || !carriersResponse.ok) {
+          throw new Error('Unable to load CargoFlow data.')
+        }
+
+        const bookingsData = await bookingsResponse.json()
+        const carriersData = await carriersResponse.json()
+
+        setProcessedBookings(bookingsData)
+        setCarriers(carriersData)
+      } catch (error) {
+        console.error('Error loading CargoFlow data:', error)
+        setApiError('Unable to load CargoFlow data.')
+      }
+    }
+
+    loadCargoFlowData()
+  }, [])
 
 
   const handleStartMoveCreation = () => {
@@ -632,17 +632,15 @@ function App() {
                       Not Assigned
                     </option>
 
-                    <option value="Carrier A">
-                      Carrier A
-                    </option>
-
-                    <option value="Carrier B">
-                      Carrier B
-                    </option>
-
-                    <option value="Carrier C">
-                      Carrier C
-                    </option>
+                  
+                    {carriers.map((carrier) => (
+                      <option
+                        key={carrier.carrierId}
+                        value={carrier.carrierName}
+                      >
+                        {carrier.carrierName}
+                      </option>
+                    ))}
                   </select>
 
                 </div>
