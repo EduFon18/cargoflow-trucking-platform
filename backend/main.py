@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from database import get_processed_bookings, create_trucking_move_in_db
 
 from models import TruckingMoveCreate, TruckingMoveResponse
 
@@ -21,26 +22,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-mock_bookings = {
-    "BK-1001": {
-        "customer": "Demo Customer A",
-        "containerNumber": "MSCU1234567",
-        "containerType": "40HC",
-        "origin": "Toronto, ON",
-        "pol": "Montreal",
-    },
-    "BK-1002": {
-        "customer": "Demo Customer B",
-        "containerNumber": "TGHU7654321",
-        "containerType": "40HC",
-        "origin": "Calgary, AB",
-        "pol": "Vancouver",
-    },
-}
-
-
-created_moves = []
 
 
 @app.get("/")
@@ -74,7 +55,16 @@ def create_trucking_move(move: TruckingMoveCreate):
             detail="Delivery appointment cannot be earlier than pickup appointment."
         )
 
-    booking = mock_bookings.get(move.bookingNumber)
+    processed_bookings = get_processed_bookings()
+
+    booking = next(
+        (
+            booking
+            for booking in processed_bookings
+            if booking["bookingNumber"] == move.bookingNumber
+        ),
+        None,
+    )
 
     if booking is None:
         raise HTTPException(
@@ -82,24 +72,28 @@ def create_trucking_move(move: TruckingMoveCreate):
             detail="Processed booking not found."
         )
 
-    move_reference = f"CF-{len(created_moves) + 1:04d}"
+    created_move_data = create_trucking_move_in_db(move)
+
+    if created_move_data is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Processed booking not found."
+        )
 
     created_move = TruckingMoveResponse(
-        moveReference=move_reference,
-        bookingNumber=move.bookingNumber,
-        customer=booking["customer"],
-        containerNumber=booking["containerNumber"],
-        containerType=booking["containerType"],
-        origin=booking["origin"],
-        moveDestination=move.moveDestination,
-        destinationType=move.destinationType,
-        pol=booking["pol"],
-        carrier=move.carrier,
-        requestedPickupDate=move.requestedPickupDate,
-        requestedDeliveryDate=move.requestedDeliveryDate,
-        status="Active",
+        moveReference=created_move_data["moveReference"],
+        bookingNumber=created_move_data["bookingNumber"],
+        customer=created_move_data["customer"],
+        containerNumber=created_move_data["containerNumber"],
+        containerType=created_move_data["containerType"],
+        origin=created_move_data["origin"],
+        moveDestination=created_move_data["moveDestination"],
+        destinationType=created_move_data["destinationType"],
+        pol=created_move_data["pol"],
+        carrier=created_move_data["carrier"],
+        requestedPickupDate=created_move_data["requestedPickupDate"],
+        requestedDeliveryDate=created_move_data["requestedDeliveryDate"],
+        status=created_move_data["status"],
     )
 
-    created_moves.append(created_move)
-
-    return created_move
+    return created_move    
