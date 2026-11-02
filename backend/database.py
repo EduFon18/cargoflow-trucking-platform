@@ -1,16 +1,36 @@
+import os
 import pyodbc
 
 
 def get_db_connection():
-    connection = pyodbc.connect(
-        "DRIVER={ODBC Driver 18 for SQL Server};"
-        "SERVER=localhost;"
-        "DATABASE=CargoFlowDB;"
-        "Trusted_Connection=yes;"
-        "TrustServerCertificate=yes;"
-    )
+    db_server = os.getenv("DB_SERVER")
+    db_name = os.getenv("DB_NAME", "CargoFlowDB")
+    db_user = os.getenv("DB_USER")
+    db_password = os.getenv("DB_PASSWORD")
 
-    return connection
+    # Docker / SQL Server Authentication
+    if db_server and db_user and db_password:
+        connection_string = (
+            "DRIVER={ODBC Driver 18 for SQL Server};"
+            f"SERVER={db_server};"
+            f"DATABASE={db_name};"
+            f"UID={db_user};"
+            f"PWD={db_password};"
+            "Encrypt=yes;"
+            "TrustServerCertificate=yes;"
+        )
+
+    # Local Windows development
+    else:
+        connection_string = (
+            "DRIVER={ODBC Driver 18 for SQL Server};"
+            "SERVER=localhost;"
+            "DATABASE=CargoFlowDB;"
+            "Trusted_Connection=yes;"
+            "TrustServerCertificate=yes;"
+        )
+
+    return pyodbc.connect(connection_string)
 
 def get_processed_bookings():
     connection = get_db_connection()
