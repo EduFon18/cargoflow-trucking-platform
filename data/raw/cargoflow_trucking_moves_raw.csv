@@ -1,6 +1,4 @@
-﻿MoveId,MoveReference,BookingId,CarrierId,MoveDestination,DestinationType,RequestedPickupDate,RequestedDeliveryDate,PickupAppointment,DeliveryAppointment,DispatchInstructions,OperationalNotes,Status,CreatedAt
-2,CF-0001,2,3,CN Brampton,Rail / Intermodal Terminal,10/19/2026,10/20/2026,30:00.0,30:00.0,Deliver before terminal cut-off.,Initial CargoFlow database test move.,Active,24:56.3
-3,CF-0002,3,1,CN Calgary,Rail / Intermodal Terminal,10/21/2026,10/22/2026,00:00.0,00:00.0,Deliver before terminal cut-off.,Testing SQL Server booking lookup.,Active,15:54.2
-4,CF-0003,3,4,CN Calgary,Rail / Intermodal Terminal,10/23/2026,10/24/2026,00:00.0,00:00.0,Deliver before terminal cut-off.,Testing automatic status history creation.,Active,46:37.2
-5,CF-0004,2,5,CN Brampton,Rail / Intermodal Terminal,10/25/2026,10/26/2026,NULL,NULL,NULL,NULL,Active,24:33.8
-6,CF-0005,2,2,CN Brampton,Rail / Intermodal Terminal,10/27/2026,10/28/2026,00:00.0,00:00.0,Docker container integration test.,Created through CargoFlow API running inside Docker.,Active,42:03.0
+MoveId,MoveReference,BookingId,BookingNumber,CustomerName,ContainerNumber,ContainerType,Origin,MoveDestination,DestinationType,PortOfLoading,CarrierId,CarrierName,RequestedPickupDate,RequestedDeliveryDate,Status,CreatedAt
+1,CF-0001,1,BK-1001,Demo Customer A,MSCU1234567,40HC,"Toronto, ON",CN Brampton,Rail / Intermodal Terminal,Montreal,3,MEDLOG,2026-10-19,2026-10-20,Active,2026-11-04 02:48:34.391914
+2,CF-0002,2,BK-1002,Demo Customer B,TGHU7654321,40HC,"Calgary, AB",CN Calgary,Rail / Intermodal Terminal,Vancouver,4,HARLYN,2026-11-05,2026-11-06,Active,2026-11-04 03:24:13.831734
+3,CF-0003,1,BK-1001,Demo Customer A,MSCU1234567,40HC,"Toronto, ON",CN Brampton,Rail / Intermodal Terminal,Montreal,3,MEDLOG,2026-11-07,2026-11-08,Active,2026-11-05 00:41:45.602571

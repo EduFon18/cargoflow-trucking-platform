@@ -1,0 +1,4 @@
+MoveReference,BookingNumber,CustomerName,ContainerNumber,ContainerType,Origin,MoveDestination,DestinationType,PortOfLoading,CarrierName,RequestedPickupDate,RequestedDeliveryDate,MoveStatus,CreatedAt
+CF-0001,BK-1001,Demo Customer A,MSCU1234567,40HC,"Toronto, ON",CN Brampton,Rail / Intermodal Terminal,Montreal,MEDLOG,2026-10-19,2026-10-20,Active,2026-11-04T02:48:34.391914
+CF-0002,BK-1002,Demo Customer B,TGHU7654321,40HC,"Calgary, AB",CN Calgary,Rail / Intermodal Terminal,Vancouver,HARLYN,2026-11-05,2026-11-06,Active,2026-11-04T03:24:13.831734
+CF-0003,BK-1001,Demo Customer A,MSCU1234567,40HC,"Toronto, ON",CN Brampton,Rail / Intermodal Terminal,Montreal,MEDLOG,2026-11-07,2026-11-08,Active,2026-11-05T00:41:45.602571

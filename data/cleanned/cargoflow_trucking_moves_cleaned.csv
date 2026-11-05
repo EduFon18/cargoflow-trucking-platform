@@ -1,6 +1,0 @@
-﻿MoveReference,BookingNumber,CustomerName,ContainerNumber,ContainerType,Origin,MoveDestination,DestinationType,PortOfLoading,CarrierName,RequestedPickupDate,RequestedDeliveryDate,MoveStatus,CreatedAt
-CF-0001,BK-1001,Demo Customer A,MSCU1234567,40HC,"Toronto, ON",CN Brampton,Rail / Intermodal Terminal,Montreal,MEDLOG,10/19/2026,10/20/2026,Active,24:56.3
-CF-0002,BK-1002,Demo Customer B,TGHU7654321,40HC,"Calgary, AB",CN Calgary,Rail / Intermodal Terminal,Vancouver,Musket,10/21/2026,10/22/2026,Active,15:54.2
-CF-0003,BK-1002,Demo Customer B,TGHU7654321,40HC,"Calgary, AB",CN Calgary,Rail / Intermodal Terminal,Vancouver,HARLYN,10/23/2026,10/24/2026,Active,46:37.2
-CF-0004,BK-1001,Demo Customer A,MSCU1234567,40HC,"Toronto, ON",CN Brampton,Rail / Intermodal Terminal,Montreal,BEST CHOICE,10/25/2026,10/26/2026,Active,24:33.8
-CF-0005,BK-1001,Demo Customer A,MSCU1234567,40HC,"Toronto, ON",CN Brampton,Rail / Intermodal Terminal,Montreal,P&W,10/27/2026,10/28/2026,Active,42:03.0
