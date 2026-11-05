@@ -8,16 +8,19 @@ def get_db_connection():
     db_user = os.getenv("DB_USER")
     db_password = os.getenv("DB_PASSWORD")
 
-    # Docker / SQL Server Authentication
+    # SQL Authentication: Docker or Azure SQL
     if db_server and db_user and db_password:
+        is_azure = db_server.endswith(".database.windows.net")
+
         connection_string = (
             "DRIVER={ODBC Driver 18 for SQL Server};"
-            f"SERVER={db_server};"
+            f"SERVER=tcp:{db_server},1433;"
             f"DATABASE={db_name};"
             f"UID={db_user};"
             f"PWD={db_password};"
             "Encrypt=yes;"
-            "TrustServerCertificate=yes;"
+            f"TrustServerCertificate={'no' if is_azure else 'yes'};"
+            "Connection Timeout=60;"
         )
 
     # Local Windows development
