@@ -1,4 +1,4 @@
-name: CargoFlow Automated ETL Workflow
+name: CargoFlow Automated Business Analysis
 
 on:
   workflow_dispatch:
@@ -10,120 +10,81 @@ permissions:
   contents: read
 
 jobs:
-  run-cargoflow-etl:
-    name: Run CargoFlow ETL Pipeline
+  run-cargoflow-analysis:
+    name: Run CargoFlow Automated Analysis
     runs-on: ubuntu-latest
-
-    env:
-      DB_SERVER: ${{ secrets.DB_SERVER }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    timeout-minutes: 5
 
     steps:
-      # ---------------------------------------------------
-      # 1. Download repository code
-      # ---------------------------------------------------
+      # -----------------------------------------------
+      # 1. Download repository
+      # -----------------------------------------------
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
-      # ---------------------------------------------------
+      # -----------------------------------------------
       # 2. Configure Python
-      # ---------------------------------------------------
+      # -----------------------------------------------
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
-      # ---------------------------------------------------
-      # 3. Install Microsoft ODBC Driver 18
-      # ---------------------------------------------------
-      - name: Install Microsoft ODBC Driver 18
-        run: |
-          curl -sSL -O https://packages.microsoft.com/config/ubuntu/$(grep VERSION_ID /etc/os-release | cut -d '"' -f 2)/packages-microsoft-prod.deb
-          sudo dpkg -i packages-microsoft-prod.deb
-          rm packages-microsoft-prod.deb
-
-          sudo apt-get update
-          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18 unixodbc-dev
-
-      # ---------------------------------------------------
-      # 4. Install Python dependencies
-      # ---------------------------------------------------
+      # -----------------------------------------------
+      # 3. Install dependencies
+      # -----------------------------------------------
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyodbc python-dotenv
+          pip install pandas
 
-      # ---------------------------------------------------
-      # 5. Validate required secrets
-      # ---------------------------------------------------
-      - name: Validate database configuration
+      # -----------------------------------------------
+      # 4. Validate input dataset
+      # -----------------------------------------------
+      - name: Validate CargoFlow dataset
         run: |
-          python -c "
-          import os
+          test -f data/cleaned/cargoflow_trucking_moves_cleaned.csv
+          echo "CargoFlow cleaned dataset found successfully."
 
-          required = [
-              'DB_SERVER',
-              'DB_NAME',
-              'DB_USER',
-              'DB_PASSWORD'
-          ]
-
-          missing = [
-              name
-              for name in required
-              if not os.getenv(name)
-          ]
-
-          if missing:
-              raise RuntimeError(
-                  'Missing required GitHub Secrets: '
-                  + ', '.join(missing)
-              )
-
-          print('Database configuration validated successfully.')
-          "
-
-      # ---------------------------------------------------
-      # 6. Run CargoFlow ETL
-      # ---------------------------------------------------
-      - name: Run CargoFlow ETL pipeline
+      # -----------------------------------------------
+      # 5. Run automated business analysis
+      # -----------------------------------------------
+      - name: Run CargoFlow business analysis
         run: |
-          python etl/cargoflow_etl.py
+          mkdir -p automation_output
+          python analysis/cargoflow_business_analysis.py | tee automation_output/business-analysis-results.txt
 
-      # ---------------------------------------------------
-      # 7. Upload successful ETL output
-      # ---------------------------------------------------
-      - name: Upload ETL output
+      # -----------------------------------------------
+      # 6. Upload successful result
+      # -----------------------------------------------
+      - name: Upload analysis results
         if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: cargoflow-etl-output
+          name: cargoflow-business-analysis-results
           path: |
-            data/raw/cargoflow_trucking_moves_raw.csv
+            automation_output/business-analysis-results.txt
             data/cleaned/cargoflow_trucking_moves_cleaned.csv
           if-no-files-found: error
 
-      # ---------------------------------------------------
-      # 8. Failure handling
-      # ---------------------------------------------------
+      # -----------------------------------------------
+      # 7. Failure handling
+      # -----------------------------------------------
       - name: Create failure report
         if: failure()
         run: |
           mkdir -p automation_logs
+          echo "CargoFlow automated analysis failed." > automation_logs/automation-failure.txt
+          echo "Check GitHub Actions logs for the failed step." >> automation_logs/automation-failure.txt
+          echo "Run ID: $GITHUB_RUN_ID" >> automation_logs/automation-failure.txt
+          echo "Repository: $GITHUB_REPOSITORY" >> automation_logs/automation-failure.txt
 
-          echo "CargoFlow ETL workflow failed." > automation_logs/etl-failure.txt
-          echo "Check the GitHub Actions execution logs for the failed step." >> automation_logs/etl-failure.txt
-          echo "Run ID: $GITHUB_RUN_ID" >> automation_logs/etl-failure.txt
-          echo "Repository: $GITHUB_REPOSITORY" >> automation_logs/etl-failure.txt
-
-      # ---------------------------------------------------
-      # 9. Upload failure evidence
-      # ---------------------------------------------------
+      # -----------------------------------------------
+      # 8. Upload failure evidence
+      # -----------------------------------------------
       - name: Upload failure report
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: cargoflow-etl-failure-report
-          path: automation_logs/etl-failure.txt
+          name: cargoflow-automation-failure-report
+          path: automation_logs/automation-failure.txt
