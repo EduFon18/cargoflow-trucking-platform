@@ -1,115 +1,187 @@
-# CargoFlow Data Mining & Business Analysis Findings
+# CargoFlow Data Mining & Business Analysis
 
 ## Business Question
 
-What operational patterns can be identified in CargoFlow trucking moves by carrier, origin, destination, and planned transit time?
+What operational patterns can be identified in CargoFlow trucking moves by carrier, origin, destination, move status, monthly volume, and planned transit time?
 
 ## Prepared Dataset
 
-The analysis uses the cleaned CargoFlow trucking move dataset:
+For the analytical demonstration, CargoFlow uses a prepared synthetic dataset containing **50 trucking moves**.
 
-`data/cleaned/cargoflow_trucking_moves_cleaned.csv`
+File:
 
-The dataset was produced by the CargoFlow ETL pipeline from Azure SQL Database.
+`data/synthetic/cargoflow_trucking_moves_synthetic.csv`
 
-The cleaned dataset contains business-friendly trucking move information including:
+The dataset was created specifically for academic analytical testing because the operational proof-of-concept Azure SQL database currently contains only a small number of live test records.
 
-- Move reference
-- Booking number
-- Customer
-- Container information
-- Origin
-- Destination
-- Carrier
-- Pickup date
-- Delivery date
-- Move status
+The synthetic dataset follows the same structure as the CargoFlow cleaned operational dataset and represents realistic trucking move scenarios.
 
-Internal database identifiers were removed during the ETL transformation process.
+The operational Azure SQL data remains unchanged.
 
 ## Analytical Approach
 
-A descriptive business analysis was implemented using Python and Pandas.
+The analysis uses descriptive data analysis with **Python and Pandas**.
 
-The analysis calculates:
+The script:
+
+`analysis/cargoflow_business_analysis.py`
+
+loads the prepared dataset and calculates operational metrics including:
 
 - Total trucking moves
-- Trucking moves by carrier
-- Trucking moves by origin
-- Trucking moves by destination
-- Planned transit duration
+- Moves by carrier
+- Moves by origin
+- Moves by destination
 - Average planned transit time
-- Carrier workload distribution
+- Carrier workload and transit performance
+- Move status distribution
+- Monthly move volume
 
-A new analytical field called `PlannedTransitDays` is calculated from the difference between requested pickup and requested delivery dates.
+This approach was selected because CargoFlow is currently a proof-of-concept and does not yet contain enough historical production data for predictive machine-learning models.
 
-## Results
+## Analysis Results
 
-The current dataset contains 3 trucking moves.
+### Total Trucking Moves
 
-### Carrier Activity
+The prepared analytical dataset contains:
 
-MEDLOG handles 2 of the 3 moves.
+**50 trucking moves**
 
-HARLYN handles 1 of the 3 moves.
+### Carrier Workload
 
-This means MEDLOG represents approximately 66.7% of the current sample workload.
+Carrier distribution:
 
-### Origin Activity
+- MEDLOG: 15 moves
+- Musket: 11 moves
+- P&W: 9 moves
+- HARLYN: 8 moves
+- BEST CHOICE: 7 moves
 
-Toronto, ON is the most active origin in the current sample with 2 trucking moves.
+MEDLOG handles the largest share of the simulated workload with:
 
-Calgary, AB has 1 trucking move.
+**30% of all trucking moves**
 
-### Destination Activity
+The remaining workload is distributed across four additional carriers.
 
-CN Brampton is the most frequent destination in the current dataset with 2 trucking moves.
+### Origin Analysis
 
-CN Calgary has 1 trucking move.
+Origin distribution:
+
+- Toronto: 16 moves
+- Brampton: 10 moves
+- Calgary: 9 moves
+- Edmonton: 8 moves
+- Winnipeg: 7 moves
+
+Toronto represents the highest-volume origin with:
+
+**16 moves (32% of the dataset)**
+
+### Destination Analysis
+
+The most frequent destinations include:
+
+- Vancouver: 12 moves
+- Montreal: 8 moves
+- Saint John: 7 moves
+- CN Brampton: 6 moves
+- CN Edmonton: 5 moves
+- CN Calgary: 5 moves
+- Philadelphia: 4 moves
+- New York: 3 moves
+
+Vancouver is the most frequent destination with:
+
+**12 trucking moves**
 
 ### Planned Transit Time
 
-The current sample has an average planned transit duration of approximately 1 day.
+The average planned transit duration across the dataset is:
 
-The current trucking moves show consistent planned transit durations.
+**2.12 days**
 
-## Interpretation of Results
+Carrier-level transit analysis also demonstrates that planned transit time can be compared across carriers to identify differences in expected operational performance.
 
-The results demonstrate how CargoFlow operational data can be transformed into useful business information.
+### Move Status Distribution
 
-Carrier workload analysis can help Operations identify whether trucking activity is concentrated with one carrier.
+The dataset includes multiple operational statuses.
 
-Origin and destination analysis can identify recurring transportation corridors and locations with higher operational activity.
+The largest status group is:
 
-Transit-time analysis provides a foundation for future comparison between planned and actual move performance.
+**Move Closed: 28 moves**
 
-With a larger dataset, these same analytical methods could help identify:
+This represents:
 
-- Carrier concentration
-- High-volume trucking corridors
-- Transit-time differences
-- Operational bottlenecks
-- Customer activity patterns
-- Seasonal changes in trucking volume
+**56% of the analyzed trucking moves**
+
+The remaining records represent moves at different stages of the trucking workflow, including:
+
+- Container Gated In
+- Active
+- Arrived at Rail/Port
+- Loading Completed
+- Empty Container Picked Up
+- Carrier Assigned
+
+This demonstrates how CargoFlow can analyze both completed and in-progress transportation activity.
+
+### Monthly Move Volume
+
+Monthly trucking volume:
+
+- August 2026: 18 moves
+- September 2026: 14 moves
+- October 2026: 18 moves
+
+August and October show the highest simulated volume with **18 moves each**.
+
+Monthly volume analysis could help Operations identify changes in workload and future capacity requirements.
+
+## Business Interpretation
+
+The analysis demonstrates several operational patterns.
+
+MEDLOG carries the largest share of the analyzed workload, but the overall volume remains distributed across five carriers. This provides an example of how CargoFlow could monitor carrier concentration and workload allocation.
+
+Toronto is the most active origin, while Vancouver is the most frequent destination. These patterns can help identify high-volume transportation corridors.
+
+The average planned transit time of 2.12 days provides an operational benchmark that could later be compared with actual transit performance.
+
+The status distribution also provides visibility into how many moves are completed versus still progressing through the trucking workflow.
+
+Finally, monthly volume analysis demonstrates how CargoFlow could support capacity planning and workload monitoring over time.
 
 ## Limitations
 
-The current CargoFlow dataset contains only 3 trucking moves.
+The analytical dataset contains **50 synthetic trucking moves created for academic demonstration**.
 
-This dataset is sufficient to demonstrate the analytical process, but it is too small to support statistically meaningful predictive conclusions.
+The records are not production transactions and should not be interpreted as actual carrier performance or real operational volume.
 
-The analysis should therefore be interpreted as a proof of concept.
+The current analysis is descriptive rather than predictive.
 
-Future versions of CargoFlow could use a larger historical dataset containing hundreds or thousands of trucking moves.
+A production implementation would require:
 
-Additional variables such as actual pickup times, actual delivery times, delays, exceptions, and carrier acceptance information would improve the analysis.
+- Larger historical datasets
+- Actual completed trucking movements
+- Actual pickup and delivery timestamps
+- Delay and exception information
+- Carrier performance history
+- Seasonal patterns
+- Cost information
+
+With sufficient production history, CargoFlow could later support predictive analysis such as delay prediction, carrier performance scoring, and workload forecasting.
 
 ## Business Conclusion
 
-The CargoFlow business analysis successfully demonstrates how operational trucking data can support business decision-making.
+The CargoFlow analytical proof-of-concept demonstrates how trucking move data can be transformed into useful operational information.
 
-The current results indicate carrier concentration around MEDLOG and recurring activity between Toronto and CN Brampton within the sample dataset.
+The analysis identifies:
 
-Although the dataset is small, the analytical workflow provides a scalable foundation for future reporting, performance analysis, and data mining.
+- Carrier workload distribution
+- High-volume origins
+- High-volume destinations
+- Planned transit patterns
+- Move status distribution
+- Monthly workload trends
 
-As more operational data becomes available, CargoFlow could expand this analysis to support carrier performance evaluation, delay prediction, operational planning, and transportation trend analysis.
+Although the current dataset is synthetic, the same analytical approach can scale to real operational CargoFlow data as the platform accumulates production history.

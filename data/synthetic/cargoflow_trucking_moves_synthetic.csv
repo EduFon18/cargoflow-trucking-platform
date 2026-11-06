@@ -1,0 +1,51 @@
+MoveReference,BookingNumber,CustomerName,ContainerNumber,ContainerType,Origin,MoveDestination,DestinationType,PortOfLoading,CarrierName,RequestedPickupDate,RequestedDeliveryDate,MoveStatus,CreatedAt
+CF-1001,BK-2001,Demo Customer A,CFGU3000000,20GP,Edmonton,CN Edmonton,Rail Terminal,Vancouver,Musket,2026-10-01,2026-10-03,Move Closed,2026-09-28 14:15:00
+CF-1002,BK-2002,Demo Customer B,CFGU3000001,40HC,Edmonton,CN Edmonton,Rail Terminal,Vancouver,Musket,2026-10-23,2026-10-24,Move Closed,2026-10-18 14:15:00
+CF-1003,BK-2003,Demo Customer C,CFGU3000002,40GP,Toronto,Saint John,Port,Saint John,Musket,2026-08-24,2026-08-26,Move Closed,2026-08-19 08:30:00
+CF-1004,BK-2004,Demo Customer D,CFGU3000003,40HC,Toronto,CN Brampton,Rail Terminal,Montreal,MEDLOG,2026-08-18,2026-08-19,Move Closed,2026-08-15 09:00:00
+CF-1005,BK-2005,Demo Customer E,CFGU3000004,40HC,Brampton,CN Brampton,Rail Terminal,Montreal,MEDLOG,2026-08-14,2026-08-15,Move Closed,2026-08-13 14:15:00
+CF-1006,BK-2006,Demo Customer F,CFGU3000005,40HC,Calgary,Vancouver,Port,Vancouver,BEST CHOICE,2026-10-13,2026-10-16,Move Closed,2026-10-08 14:45:00
+CF-1007,BK-2007,Demo Customer G,CFGU3000006,40GP,Toronto,Philadelphia,Port,Philadelphia,P&W,2026-10-31,2026-11-03,Move Closed,2026-10-28 13:30:00
+CF-1008,BK-2008,Demo Customer H,CFGU3000007,40HC,Toronto,Philadelphia,Port,Philadelphia,MEDLOG,2026-09-30,2026-10-02,Container Gated In,2026-09-28 08:30:00
+CF-1009,BK-2009,Demo Customer A,CFGU3000008,20GP,Toronto,Philadelphia,Port,Philadelphia,P&W,2026-10-13,2026-10-16,Move Closed,2026-10-11 08:00:00
+CF-1010,BK-2010,Demo Customer B,CFGU3000009,20GP,Toronto,CN Brampton,Rail Terminal,Montreal,Musket,2026-09-02,2026-09-04,Move Closed,2026-09-01 10:00:00
+CF-1011,BK-2011,Demo Customer C,CFGU3000010,20GP,Calgary,CN Calgary,Rail Terminal,Vancouver,P&W,2026-09-08,2026-09-09,Move Closed,2026-09-06 14:15:00
+CF-1012,BK-2012,Demo Customer D,CFGU3000011,40HC,Toronto,Philadelphia,Port,Philadelphia,Musket,2026-10-16,2026-10-18,Move Closed,2026-10-12 13:15:00
+CF-1013,BK-2013,Demo Customer E,CFGU3000012,20GP,Edmonton,CN Edmonton,Rail Terminal,Vancouver,MEDLOG,2026-10-27,2026-10-28,Loading Completed,2026-10-23 13:45:00
+CF-1014,BK-2014,Demo Customer F,CFGU3000013,20GP,Brampton,CN Brampton,Rail Terminal,Montreal,MEDLOG,2026-10-29,2026-10-30,Empty Container Picked Up,2026-10-28 08:45:00
+CF-1015,BK-2015,Demo Customer G,CFGU3000014,40HC,Brampton,Saint John,Port,Saint John,HARLYN,2026-08-17,2026-08-19,Loading Completed,2026-08-15 14:45:00
+CF-1016,BK-2016,Demo Customer H,CFGU3000015,20GP,Winnipeg,Montreal,Port,Montreal,HARLYN,2026-08-27,2026-08-30,Container Gated In,2026-08-25 08:45:00
+CF-1017,BK-2017,Demo Customer A,CFGU3000016,40HC,Winnipeg,Vancouver,Port,Vancouver,MEDLOG,2026-08-10,2026-08-13,Move Closed,2026-08-05 08:00:00
+CF-1018,BK-2018,Demo Customer B,CFGU3000017,40HC,Brampton,Montreal,Port,Montreal,Musket,2026-09-25,2026-09-27,Carrier Assigned,2026-09-23 13:00:00
+CF-1019,BK-2019,Demo Customer C,CFGU3000018,40GP,Brampton,New York,Port,New York,HARLYN,2026-08-04,2026-08-06,Active,2026-08-01 13:30:00
+CF-1020,BK-2020,Demo Customer D,CFGU3000019,20GP,Edmonton,Vancouver,Port,Vancouver,MEDLOG,2026-08-23,2026-08-25,Move Closed,2026-08-21 08:00:00
+CF-1021,BK-2021,Demo Customer E,CFGU3000020,40HC,Calgary,Vancouver,Port,Vancouver,BEST CHOICE,2026-08-11,2026-08-14,Active,2026-08-07 14:15:00
+CF-1022,BK-2022,Demo Customer F,CFGU3000021,40GP,Brampton,CN Brampton,Rail Terminal,Montreal,Musket,2026-08-27,2026-08-29,Container Gated In,2026-08-26 15:15:00
+CF-1023,BK-2023,Demo Customer G,CFGU3000022,40GP,Calgary,CN Calgary,Rail Terminal,Vancouver,P&W,2026-10-15,2026-10-17,Move Closed,2026-10-10 08:00:00
+CF-1024,BK-2024,Demo Customer H,CFGU3000023,40GP,Calgary,Vancouver,Port,Vancouver,BEST CHOICE,2026-09-06,2026-09-09,Move Closed,2026-09-03 09:30:00
+CF-1025,BK-2025,Demo Customer A,CFGU3000024,40HC,Calgary,CN Calgary,Rail Terminal,Vancouver,HARLYN,2026-10-28,2026-10-29,Move Closed,2026-10-24 10:00:00
+CF-1026,BK-2026,Demo Customer B,CFGU3000025,20GP,Winnipeg,Montreal,Port,Montreal,P&W,2026-10-22,2026-10-25,Move Closed,2026-10-21 08:15:00
+CF-1027,BK-2027,Demo Customer C,CFGU3000026,40HC,Toronto,Saint John,Port,Saint John,P&W,2026-08-20,2026-08-22,Active,2026-08-19 09:30:00
+CF-1028,BK-2028,Demo Customer D,CFGU3000027,20GP,Calgary,CN Calgary,Rail Terminal,Vancouver,Musket,2026-09-29,2026-09-30,Arrived at Rail/Port,2026-09-26 14:00:00
+CF-1029,BK-2029,Demo Customer E,CFGU3000028,40HC,Brampton,Saint John,Port,Saint John,Musket,2026-10-27,2026-10-30,Move Closed,2026-10-25 10:00:00
+CF-1030,BK-2030,Demo Customer F,CFGU3000029,40HC,Calgary,CN Calgary,Rail Terminal,Vancouver,HARLYN,2026-09-07,2026-09-08,Move Closed,2026-09-05 15:30:00
+CF-1031,BK-2031,Demo Customer G,CFGU3000030,40HC,Toronto,Saint John,Port,Saint John,BEST CHOICE,2026-10-07,2026-10-09,Move Closed,2026-10-06 08:45:00
+CF-1032,BK-2032,Demo Customer H,CFGU3000031,40HC,Winnipeg,Vancouver,Port,Vancouver,HARLYN,2026-08-04,2026-08-07,Empty Container Picked Up,2026-08-02 15:30:00
+CF-1033,BK-2033,Demo Customer A,CFGU3000032,40HC,Toronto,New York,Port,New York,P&W,2026-10-13,2026-10-15,Move Closed,2026-10-08 08:00:00
+CF-1034,BK-2034,Demo Customer B,CFGU3000033,40GP,Winnipeg,Vancouver,Port,Vancouver,BEST CHOICE,2026-10-12,2026-10-16,Loading Completed,2026-10-09 14:15:00
+CF-1035,BK-2035,Demo Customer C,CFGU3000034,20GP,Winnipeg,Vancouver,Port,Vancouver,MEDLOG,2026-08-09,2026-08-12,Arrived at Rail/Port,2026-08-08 10:15:00
+CF-1036,BK-2036,Demo Customer D,CFGU3000035,40HC,Winnipeg,Vancouver,Port,Vancouver,BEST CHOICE,2026-10-28,2026-11-01,Arrived at Rail/Port,2026-10-23 13:15:00
+CF-1037,BK-2037,Demo Customer E,CFGU3000036,40GP,Toronto,Montreal,Port,Montreal,BEST CHOICE,2026-08-26,2026-08-28,Move Closed,2026-08-25 09:30:00
+CF-1038,BK-2038,Demo Customer F,CFGU3000037,40GP,Toronto,Montreal,Port,Montreal,MEDLOG,2026-09-07,2026-09-09,Move Closed,2026-09-06 13:00:00
+CF-1039,BK-2039,Demo Customer G,CFGU3000038,40HC,Toronto,Montreal,Port,Montreal,P&W,2026-08-29,2026-08-31,Move Closed,2026-08-25 10:30:00
+CF-1040,BK-2040,Demo Customer H,CFGU3000039,40HC,Toronto,Montreal,Port,Montreal,HARLYN,2026-08-07,2026-08-09,Move Closed,2026-08-03 10:30:00
+CF-1041,BK-2041,Demo Customer A,CFGU3000040,40HC,Edmonton,Vancouver,Port,Vancouver,MEDLOG,2026-09-17,2026-09-19,Container Gated In,2026-09-13 15:30:00
+CF-1042,BK-2042,Demo Customer B,CFGU3000041,20GP,Brampton,CN Brampton,Rail Terminal,Montreal,P&W,2026-09-06,2026-09-08,Carrier Assigned,2026-09-03 08:00:00
+CF-1043,BK-2043,Demo Customer C,CFGU3000042,40GP,Edmonton,Vancouver,Port,Vancouver,MEDLOG,2026-09-17,2026-09-19,Move Closed,2026-09-14 13:00:00
+CF-1044,BK-2044,Demo Customer D,CFGU3000043,40HC,Edmonton,CN Edmonton,Rail Terminal,Vancouver,MEDLOG,2026-09-05,2026-09-07,Container Gated In,2026-09-01 08:15:00
+CF-1045,BK-2045,Demo Customer E,CFGU3000044,20GP,Brampton,New York,Port,New York,MEDLOG,2026-08-12,2026-08-14,Empty Container Picked Up,2026-08-09 14:30:00
+CF-1046,BK-2046,Demo Customer F,CFGU3000045,20GP,Edmonton,CN Edmonton,Rail Terminal,Vancouver,Musket,2026-09-11,2026-09-12,Active,2026-09-07 10:45:00
+CF-1047,BK-2047,Demo Customer G,CFGU3000046,20GP,Toronto,Saint John,Port,Saint John,Musket,2026-10-13,2026-10-16,Move Closed,2026-10-09 15:45:00
+CF-1048,BK-2048,Demo Customer H,CFGU3000047,40HC,Brampton,Montreal,Port,Montreal,MEDLOG,2026-10-21,2026-10-23,Carrier Assigned,2026-10-17 14:00:00
+CF-1049,BK-2049,Demo Customer A,CFGU3000048,40GP,Toronto,Saint John,Port,Saint John,MEDLOG,2026-08-30,2026-09-01,Arrived at Rail/Port,2026-08-25 14:30:00
+CF-1050,BK-2050,Demo Customer B,CFGU3000049,20GP,Calgary,Vancouver,Port,Vancouver,HARLYN,2026-09-29,2026-10-01,Move Closed,2026-09-24 13:15:00

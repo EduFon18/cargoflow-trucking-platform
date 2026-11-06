@@ -62,11 +62,13 @@ This demonstrates a scheduled cloud automation process that does not require a u
 
 ## Input
 
-The workflow uses the cleaned CargoFlow trucking move dataset:
+The workflow uses the prepared synthetic CargoFlow analytical dataset:
 
-`data/cleaned/cargoflow_trucking_moves_cleaned.csv`
+`data/synthetic/cargoflow_trucking_moves_synthetic.csv`
 
-This dataset was previously generated through the CargoFlow ETL process.
+This synthetic dataset follows the same structure as the cleaned CargoFlow dataset and was created for academic analytical demonstration.
+
+The dataset contains 50 synthetic trucking moves created for academic analytical demonstration. The operational Azure SQL database remains unchanged.
 
 The prepared dataset includes business-oriented information such as:
 

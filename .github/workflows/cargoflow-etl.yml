@@ -41,10 +41,10 @@ jobs:
       # -----------------------------------------------
       # 4. Validate input dataset
       # -----------------------------------------------
-      - name: Validate CargoFlow dataset
+      - name: Validate CargoFlow synthetic dataset
         run: |
-          test -f data/cleaned/cargoflow_trucking_moves_cleaned.csv
-          echo "CargoFlow cleaned dataset found successfully."
+          test -f data/synthetic/cargoflow_trucking_moves_synthetic.csv
+          echo "CargoFlow synthetic analytical dataset found successfully."
 
       # -----------------------------------------------
       # 5. Run automated business analysis
@@ -64,7 +64,7 @@ jobs:
           name: cargoflow-business-analysis-results
           path: |
             automation_output/business-analysis-results.txt
-            data/cleaned/cargoflow_trucking_moves_cleaned.csv
+            data/synthetic/cargoflow_trucking_moves_synthetic.csv
           if-no-files-found: error
 
       # -----------------------------------------------

@@ -11,8 +11,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_FILE = (
     PROJECT_ROOT
     / "data"
-    / "cleaned"
-    / "cargoflow_trucking_moves_cleaned.csv"
+    / "synthetic"
+    / "cargoflow_trucking_moves_synthetic.csv"
 )
 
 
@@ -118,6 +118,25 @@ def analyze_data(df):
     print("\nCarrier workload and transit analysis:")
     print(carrier_transit)
 
+    print("\nMoves by status:")
+    status_summary = df["MoveStatus"].value_counts()
+    print(status_summary)
+
+    print("\nMonthly move volume:")
+    df["PickupMonth"] = (
+        df["RequestedPickupDate"]
+        .dt.to_period("M")
+        .astype(str)
+    )
+
+    monthly_summary = (
+        df.groupby("PickupMonth")
+        .size()
+        .sort_index()
+    )
+
+    print(monthly_summary)
+
     print("\n" + "=" * 65)
     print("BUSINESS FINDINGS")
     print("=" * 65)
@@ -166,10 +185,10 @@ def analyze_data(df):
     print("=" * 65)
 
     print(
-        "\nThe current CargoFlow dataset contains only "
-        f"{total_moves} trucking moves. "
+        "\nThe current CargoFlow analytical dataset contains "
+        f"{total_moves} synthetic trucking moves created for academic demonstration. "
         "The analysis demonstrates the analytical approach, "
-        "but the sample is too small for predictive conclusions."
+        "but production historical data would be required for predictive conclusions."
     )
 
     print("\n" + "=" * 65)
